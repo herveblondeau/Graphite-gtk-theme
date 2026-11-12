@@ -45,7 +45,7 @@ Run the following commands in the terminal:
 -u, --uninstall
 -r, --remove            Uninstall/Remove themes or link for libadwaita
 
---tweaks                Specify versions for tweaks [nord|dracula|ferra|black|darker|rimless|normal]
+--tweaks                Specify versions for tweaks [nord|dracula|ferra|black|darker|rimless|whitesur|normal]
                         (WORRING: 'nord', 'dracula', 'ferra' and 'darker' can not mix use with 'black'!)
                         1. nord:     Nord colorscheme version
                         2. dracula:  Dracula colorscheme version
@@ -56,6 +56,7 @@ Run the following commands in the terminal:
                         7. normal:   Normal sidebar style (Nautilus)
                         8. float:    Float gnome-shell panel style
                         9. colorful: Colorful gnome-shell panel style
+                        10. whitesur: WhiteSur macOS traffic-light window buttons
 
 --round                 Change theme round corner border-radius [Input the px value you want] (Suggested: 2px < value < 16px)
                           1. 3px

@@ -6443,27 +6443,67 @@ windowcontrols {
   }
 
   > button:not(.suggested-action):not(.destructive-action) {
-    @extend %circular-button;
-    min-height: 24px;
-    min-width: 24px;
-    padding: 0;
-    margin: 0 $space-size / 2;
+    @if $window_button == 'whitesur' {
+      // macOS traffic-light window buttons (grafted from WhiteSur)
+      min-height: 16px;
+      min-width: 16px;
+      padding: 0;
+      margin: 0 $space-size / 2;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 16px 16px;
 
-    image {
-      background: none;
-    }
+      image { opacity: 0; color: transparent; background: none; }
 
-    &.close {
-
-      // Window Close button
-      &:hover {
-        background-color: $titlebar-primary;
-        color: $titlebar;
+      &.close, &.maximize, &.minimize {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        color: transparent;
       }
 
-      &:active {
-        background-color: darken($titlebar-primary, 10%);
-        color: $titlebar;
+      @each $btn in 'close', 'maximize', 'minimize' {
+        &.#{$btn} {
+          background-image: -gtk-scaled(url("windows-assets/titlebutton-#{$btn}#{$asset-suffix}.png"), url("windows-assets/titlebutton-#{$btn}#{$asset-suffix}@2.png"));
+          &:hover { background-image: -gtk-scaled(url("windows-assets/titlebutton-#{$btn}-hover#{$asset-suffix}.png"), url("windows-assets/titlebutton-#{$btn}-hover#{$asset-suffix}@2.png")); }
+          &:active { background-image: -gtk-scaled(url("windows-assets/titlebutton-#{$btn}-active#{$asset-suffix}.png"), url("windows-assets/titlebutton-#{$btn}-active#{$asset-suffix}@2.png")); }
+          &:backdrop { background-image: -gtk-scaled(url("windows-assets/titlebutton-#{$btn}-backdrop#{$asset-suffix}.png"), url("windows-assets/titlebutton-#{$btn}-backdrop#{$asset-suffix}@2.png")); }
+          &:backdrop:hover { background-image: -gtk-scaled(url("windows-assets/titlebutton-#{$btn}-backdrop-hover#{$asset-suffix}.png"), url("windows-assets/titlebutton-#{$btn}-backdrop-hover#{$asset-suffix}@2.png")); }
+        }
+      }
+
+      &.maximize { // restore artwork when maximized/fullscreen
+        @each $state in '.maximized', '.fullscreen' {
+          #{$state} & {
+            background-image: -gtk-scaled(url("windows-assets/titlebutton-restore#{$asset-suffix}.png"), url("windows-assets/titlebutton-restore#{$asset-suffix}@2.png"));
+            &:hover { background-image: -gtk-scaled(url("windows-assets/titlebutton-restore-hover#{$asset-suffix}.png"), url("windows-assets/titlebutton-restore-hover#{$asset-suffix}@2.png")); }
+            &:active { background-image: -gtk-scaled(url("windows-assets/titlebutton-restore-active#{$asset-suffix}.png"), url("windows-assets/titlebutton-restore-active#{$asset-suffix}@2.png")); }
+          }
+        }
+      }
+    } @else {
+      @extend %circular-button;
+      min-height: 24px;
+      min-width: 24px;
+      padding: 0;
+      margin: 0 $space-size / 2;
+
+      image {
+        background: none;
+      }
+
+      &.close {
+
+        // Window Close button
+        &:hover {
+          background-color: $titlebar-primary;
+          color: $titlebar;
+        }
+
+        &:active {
+          background-color: darken($titlebar-primary, 10%);
+          color: $titlebar;
+        }
       }
     }
   }

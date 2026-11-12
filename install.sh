@@ -115,6 +115,7 @@ OPTIONS:
                           4. black      Blackness colorscheme version
                           5. darker     Darker (default|nord|dracula|ferra) color version (black option can not be darker)
                           6. rimless    Remove the 2px outline about windows and menus
+                          -. whitesur   Use WhiteSur macOS traffic-light window buttons
                           7. normal     Normal sidebar style (Nautilus)
                           8. float      Float gnome-shell panel style
                           9. colorful   Colorful gnome-shell panel style
@@ -202,6 +203,7 @@ install() {
   fi
   cp -r "${SRC_DIR}/assets/gtk/${gtk_assets}"                                                "${THEME_DIR}/gtk-3.0/assets"
   cp -r "${SRC_DIR}/assets/gtk/scalable"                                                     "${THEME_DIR}/gtk-3.0/assets"
+  [[ "$window_button" = "true" ]] && cp -r "${SRC_DIR}/assets/gtk/windows-assets"            "${THEME_DIR}/gtk-3.0/windows-assets"
   cp -r "${SRC_DIR}/assets/gtk/thumbnail${theme}${ELSE_DARK:-}.png"                          "${THEME_DIR}/gtk-3.0/thumbnail.png"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-3.0/gtk${color}.scss"                                "${THEME_DIR}/gtk-3.0/gtk.css"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-3.0/gtk-Dark.scss"                                   "${THEME_DIR}/gtk-3.0/gtk-dark.css"
@@ -209,6 +211,7 @@ install() {
   mkdir -p                                                                                   "${THEME_DIR}/gtk-4.0"
   cp -r "${SRC_DIR}/assets/gtk/${gtk_assets}"                                                "${THEME_DIR}/gtk-4.0/assets"
   cp -r "${SRC_DIR}/assets/gtk/scalable"                                                     "${THEME_DIR}/gtk-4.0/assets"
+  [[ "$window_button" = "true" ]] && cp -r "${SRC_DIR}/assets/gtk/windows-assets"            "${THEME_DIR}/gtk-4.0/windows-assets"
   cp -r "${SRC_DIR}/assets/gtk/thumbnail${theme}${ELSE_DARK:-}.png"                          "${THEME_DIR}/gtk-4.0/thumbnail.png"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-4.0/gtk${color}.scss"                                "${THEME_DIR}/gtk-4.0/gtk.css"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-4.0/gtk-Dark.scss"                                   "${THEME_DIR}/gtk-4.0/gtk-dark.css"
@@ -871,6 +874,11 @@ while [[ $# -gt 0 ]]; do
             echo -e "Install Rimless version! ..."
             shift
             ;;
+          whitesur)
+            window_button="true"
+            echo -e "Install WhiteSur window buttons version! ..."
+            shift
+            ;;
           normal)
             normal="true"
             echo -e "Install Normal sidebar version! ..."
@@ -960,6 +968,10 @@ darker_color() {
 
 border_rimless() {
   sed -i "/\$rimless:/s/false/true/" ${SRC_DIR}/sass/_tweaks-temp.scss
+}
+
+whitesur_window_button() {
+  sed -i "/\$window_button:/s/graphite/whitesur/" ${SRC_DIR}/sass/_tweaks-temp.scss
 }
 
 normal_sidebar() {
@@ -1053,6 +1065,10 @@ theme_tweaks() {
 
   if [[ "$rimless" = "true" ]] ; then
     border_rimless
+  fi
+
+  if [[ "$window_button" = "true" ]] ; then
+    whitesur_window_button
   fi
 
   if [[ "$normal" = "true" ]] ; then
