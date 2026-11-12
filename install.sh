@@ -252,27 +252,6 @@ install() {
   fi
 }
 
-# Destination directory
-if [[ "$UID" -eq "$ROOT_UID" ]]; then
-  APP_DIR="${DESTDIR}/usr/share/applications"
-  BIN_DIR="${DESTDIR}/usr/bin"
-else
-  APP_DIR="$HOME/.local/share/applications"
-  BIN_DIR="$HOME/.local/bin"
-fi
-
-install_app() {
-  echo "Installing 'gnome-theme-switcher' app..."
-
-  [[ -f "${BIN_DIR}/gnome-theme-switcher" ]] && rm -rf "${BIN_DIR}/gnome-theme-switcher"
-  [[ -f "${APP_DIR}/org.gnome.GTK4ThemeSwitcher.desktop" ]] && rm -rf "${APP_DIR}/org.gnome.GTK4ThemeSwitcher.desktop"
-
-  mkdir -p "${BIN_DIR}"
-  cp -r "${REPO_DIR}/other/gnome-theme-switcher/gnome-theme-switcher" "${BIN_DIR}"
-  mkdir -p "${APP_DIR}"
-  cp -r "${REPO_DIR}/other/gnome-theme-switcher/org.gnome.GTK4ThemeSwitcher.desktop" "${APP_DIR}"
-}
-
 color_value() {
   case "$theme" in
       '')
@@ -717,10 +696,7 @@ while [[ $# -gt 0 ]]; do
           remove_theme="true"
             shift
             ;;
-        app)
-          remove_app="true"
-            shift
-            ;;
+
       esac
       done
       ;;
@@ -1213,12 +1189,6 @@ if [[ "$uninstall" == 'true' ]]; then
     fi
   else
     echo && uninstall_theme && uninstall_link
-
-    if [[ "$remove_app" == 'true' ]]; then
-      echo -e "\nUninstall 'gnome-theme-switcher' app..."
-      rm -rf "${BIN_DIR}/gnome-theme-switcher"
-      rm -rf "${APP_DIR}/org.gnome.GTK4ThemeSwitcher.desktop"
-    fi
   fi
 else
   if [[ "$gdm" == 'true' ]]; then
@@ -1228,7 +1198,7 @@ else
       echo -e "\nNeed root permission !"
     fi
   else
-    install_package && sass_temp && gnome_shell_version && install_theme && install_app
+    install_package && sass_temp && gnome_shell_version && install_theme
 
     if [[ "$libadwaita" == 'true' ]]; then
       uninstall_link && link_theme
