@@ -348,6 +348,14 @@
   }
 }
 
+// Make the selected sidebar row run to the right edge of the pane and square
+// its right corners so it visually merges into the main file view.
+.nautilus-window .navigation-sidebar > row:selected {
+  margin-right: -$space-size;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 #NautilusQueryEditor, .nautilus-query-editor {
 
   // search entry
