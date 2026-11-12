@@ -1065,7 +1065,7 @@ theme_tweaks() {
 }
 
 uninstall_link() {
-  rm -rf "${HOME}/.config/gtk-4.0"/{assets,gtk.css,gtk-dark.css}
+  rm -rf "${HOME}/.config/gtk-4.0"/{assets,windows-assets,gtk.css,gtk-dark.css}
 }
 
 link_libadwaita() {
@@ -1084,6 +1084,10 @@ link_libadwaita() {
   ln -sf "${THEME_DIR}/gtk-4.0/assets"                                          "${HOME}/.config/gtk-4.0/assets"
   ln -sf "${THEME_DIR}/gtk-4.0/gtk.css"                                         "${HOME}/.config/gtk-4.0/gtk.css"
   ln -sf "${THEME_DIR}/gtk-4.0/gtk-dark.css"                                    "${HOME}/.config/gtk-4.0/gtk-dark.css"
+  # WhiteSur window buttons reference windows-assets/ via relative URLs, so the
+  # directory must be reachable from ~/.config/gtk-4.0 or the PNGs fail to load.
+  [[ -d "${THEME_DIR}/gtk-4.0/windows-assets" ]] && \
+    ln -sf "${THEME_DIR}/gtk-4.0/windows-assets"                                "${HOME}/.config/gtk-4.0/windows-assets"
 }
 
 uninstall() {
