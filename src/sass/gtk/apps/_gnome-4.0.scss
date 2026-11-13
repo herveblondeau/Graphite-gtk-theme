@@ -387,12 +387,28 @@ $nautilus-inv-radius: 10px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     background-color: transparent;
+    // The fill is composed as a rounded rectangle: the right corners are the
+    // concave "opening" bleed (into the overlap/neighbour area), the left corners
+    // are normal convex rounding. Tall (r x 2r) left-corner tiles let the
+    // rounding sit at the logical row edge while the overlap band stays clear.
+    // Two linear bars (right-covering + full-width middle) fill the body so the
+    // left corners are free for the discs. (GTK4: no 4-value bg-position, so
+    // corners are placed with left top / left bottom.)
     background-image:
-      radial-gradient(circle $nautilus-inv-radius at top left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),
-      radial-gradient(circle $nautilus-inv-radius at bottom left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),
-      linear-gradient(to bottom, transparent $nautilus-inv-radius, $base $nautilus-inv-radius, $base calc(100% - #{$nautilus-inv-radius}), transparent calc(100% - #{$nautilus-inv-radius}));
-    background-position: top right, bottom right, center;
-    background-size: $nautilus-inv-radius $nautilus-inv-radius, $nautilus-inv-radius $nautilus-inv-radius, 100% 100%;
+      radial-gradient(circle $nautilus-inv-radius at top left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),       // top-right concave
+      radial-gradient(circle $nautilus-inv-radius at bottom left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),    // bottom-right concave
+      radial-gradient(circle $nautilus-inv-radius at bottom right, $base ($nautilus-inv-radius - 1px), transparent $nautilus-inv-radius),   // top-left convex
+      radial-gradient(circle $nautilus-inv-radius at top right, $base ($nautilus-inv-radius - 1px), transparent $nautilus-inv-radius),      // bottom-left convex
+      linear-gradient($base, $base),   // body: right-covering bar (inset from left by r)
+      linear-gradient($base, $base);   // body: full-width middle bar
+    background-position: top right, bottom right, left top, left bottom, right center, center;
+    background-size:
+      $nautilus-inv-radius $nautilus-inv-radius,
+      $nautilus-inv-radius $nautilus-inv-radius,
+      $nautilus-inv-radius ($nautilus-inv-radius * 2),
+      $nautilus-inv-radius ($nautilus-inv-radius * 2),
+      calc(100% - #{$nautilus-inv-radius}) calc(100% - #{$nautilus-inv-radius * 2}),
+      100% calc(100% - #{$nautilus-inv-radius * 4});
     background-repeat: no-repeat;
   }
 }
