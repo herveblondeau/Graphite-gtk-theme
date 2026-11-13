@@ -356,6 +356,21 @@
   border-bottom-right-radius: 0;
 }
 
+// Keep the selected row's highlight stable on hover/focus so it stays merged
+// with the main view; only unselected rows react to hover. The selected row's
+// background is $base (styled sidebar path), so pin its hover/focus states to
+// the same value. The extra .nautilus-window / listview.view / .sidebar-pane
+// classes outrank the generic and %sidebar-row rules that otherwise change it.
+.nautilus-window listview.view.navigation-sidebar > row:selected,
+.nautilus-window .sidebar-pane .navigation-sidebar > row:selected,
+.nautilus-window .navigation-sidebar > row:selected {
+  &:hover,
+  &:focus-visible:focus-within,
+  &:focus-visible:focus-within:hover {
+    background-color: $base;
+  }
+}
+
 #NautilusQueryEditor, .nautilus-query-editor {
 
   // search entry
