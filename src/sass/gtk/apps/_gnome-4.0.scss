@@ -413,6 +413,40 @@ $nautilus-inv-radius: 10px;
   }
 }
 
+// Tone down the (bright) Nautilus sidebar / left-pane background. Left pane
+// only for now; the main view is untouched. Tunable via the mix ratio - higher
+// second number = darker (more of the dark $base mixed into the sidebar colour).
+// The .nautilus-window prefix outranks the base .sidebar-pane rule.
+$nautilus-sidebar-bg: mix($base, $sidebg, 12.5%);
+
+.nautilus-window .sidebar-pane toolbarview > scrolledwindow,
+.nautilus-window .sidebar-pane toolbarview > placessidebar > scrolledwindow,
+.nautilus-window .sidebar-pane toolbarview > stacksidebar.sidebar > scrolledwindow {
+  background-color: $nautilus-sidebar-bg;
+}
+
+// Reuse the same toned-down colour for the right-pane selection highlight
+// (list + grid) and the floating "N selected" bar, so the whole window shares
+// one accent-free selection colour. .nautilus-window outranks the base rules.
+.nautilus-window .nautilus-list-view listview.view > row.activatable:selected,
+.nautilus-window .nautilus-grid-view child.activatable:selected,
+.nautilus-window .floating-bar {
+  background-color: $nautilus-sidebar-bg;
+  color: on($nautilus-sidebar-bg);
+
+  expander, .dim-label, button {
+    color: on($nautilus-sidebar-bg);
+  }
+}
+
+// Match the main-view selected items' corner radius to the sidebar selection
+// radius ($nautilus-inv-radius). Applied to the item (not just :selected) so
+// hover uses the same shape.
+.nautilus-window .nautilus-list-view listview.view > row.activatable,
+.nautilus-window .nautilus-grid-view child.activatable {
+  border-radius: $nautilus-inv-radius;
+}
+
 #NautilusQueryEditor, .nautilus-query-editor {
 
   // search entry
