@@ -348,26 +348,52 @@
   }
 }
 
-// Make the selected sidebar row run to the right edge of the pane and square
-// its right corners so it visually merges into the main file view.
-.nautilus-window .navigation-sidebar > row:selected {
-  margin-right: -$space-size;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+// --- Selected sidebar row: merge into the main view + "opening" inverted
+// corners that bleed into the neighbouring rows (Orchis-style, pure CSS).
+//
+// Nautilus' sidebar is a GtkListBox (NautilusSidebarRow : GtkListBoxRow), so
+// negative vertical margins make rows overlap; the selected row then paints its
+// fill into the bottom-right corner of the row above and the top-right corner
+// of the row below. The fill is composed from gradients - no PNG, no
+// pseudo-elements, no sibling selectors:
+//   - a central rectangle inset vertically by $r (so only the corners bleed out)
+//   - two $base quarter-disc corners sitting in the overlap (neighbour) area
+// $r is both the corner radius and the overlap depth.
+$nautilus-inv-radius: 10px;
+
+// Overlap every row by $r, compensating with padding so row spacing is
+// unchanged. (Inner node per nautilus-sidebar-row.ui: row > revealer > box.)
+.nautilus-window .navigation-sidebar > row.activatable {
+  margin-top: -$nautilus-inv-radius;
+  margin-bottom: -$nautilus-inv-radius;
+
+  > revealer.sidebar-revealer > box {
+    padding-top: $nautilus-inv-radius;
+    padding-bottom: $nautilus-inv-radius;
+  }
 }
 
-// Keep the selected row's highlight stable on hover/focus so it stays merged
-// with the main view; only unselected rows react to hover. The selected row's
-// background is $base (styled sidebar path), so pin its hover/focus states to
-// the same value. The extra .nautilus-window / listview.view / .sidebar-pane
-// classes outrank the generic and %sidebar-row rules that otherwise change it.
+// The fill is pinned on hover/focus too so the row stays stable (only unselected
+// rows react to hover). The extra .nautilus-window / listview.view /
+// .sidebar-pane classes outrank the generic and %sidebar-row rules.
 .nautilus-window listview.view.navigation-sidebar > row:selected,
 .nautilus-window .sidebar-pane .navigation-sidebar > row:selected,
 .nautilus-window .navigation-sidebar > row:selected {
+  &,
   &:hover,
   &:focus-visible:focus-within,
   &:focus-visible:focus-within:hover {
-    background-color: $base;
+    margin-right: -$space-size;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: transparent;
+    background-image:
+      radial-gradient(circle $nautilus-inv-radius at top left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),
+      radial-gradient(circle $nautilus-inv-radius at bottom left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),
+      linear-gradient(to bottom, transparent $nautilus-inv-radius, $base $nautilus-inv-radius, $base calc(100% - #{$nautilus-inv-radius}), transparent calc(100% - #{$nautilus-inv-radius}));
+    background-position: top right, bottom right, center;
+    background-size: $nautilus-inv-radius $nautilus-inv-radius, $nautilus-inv-radius $nautilus-inv-radius, 100% 100%;
+    background-repeat: no-repeat;
   }
 }
 
