@@ -31,7 +31,9 @@ Files changed:
   styling `button.titlebutton` (GTK3)
 - `src/sass/gtk/_common-4.0.scss` - same branch for `windowcontrols > button` (GTK4)
 - `install.sh` - parse `whitesur`, flip the variable, copy `windows-assets/`
-  into the built theme (gated on the tweak)
+  into the built theme (gated on the tweak); and, for the libadwaita `-l`
+  link path, symlink `windows-assets/` into `~/.config/gtk-4.0` (with matching
+  cleanup in `uninstall_link`) so the buttons' relative PNG URLs resolve
 - `src/assets/gtk/windows-assets/` - WhiteSur button PNGs (light + dark, @1 / @2)
 - `README.md` - documents the tweak
 
@@ -55,6 +57,40 @@ Files changed:
 - `install.sh` - removed `install_app`, its call, the `-u app` uninstall case,
   and the unused `APP_DIR` / `BIN_DIR` variables
 - deleted `other/gnome-theme-switcher/`
+
+### 3. Nautilus (GTK4 / libadwaita) sidebar and selection restyle
+
+Reworks Nautilus selection styling so the whole window shares one calm,
+accent-free highlight and the selected sidebar row visually merges into the
+main file view. All in `src/sass/gtk/apps/_gnome-4.0.scss`.
+
+What it does:
+
+- Accent-free selection colour `$nautilus-sidebar-bg: mix($base, $sidebg, 12.5%)`
+  reused for the sidebar/left-pane background, the selected sidebar row, the
+  main-view list and grid selection, and the floating "N selected" bar
+- Unified corner radius `$nautilus-inv-radius: 10px` across the sidebar
+  selection and the main-view list/grid items
+- Selected sidebar row runs to the right edge (`margin-right: -$space-size`)
+  with squared right corners, so it bleeds into the main view. Its right
+  corners are concave "opening" cutouts and its left corners convex, composed
+  as a multi-layer `radial-gradient` + `linear-gradient` fill (GTK4 has no
+  4-value `background-position`, so corners are placed with `left top` /
+  `left bottom`)
+- Sidebar rows overlap by the radius with compensating padding, so the
+  concave corners can curve into the neighbour row without changing spacing
+- The selection fill is pinned on hover/focus so the selected row stays
+  stable; only unselected rows react to hover
+
+Gotchas discovered while building this:
+
+- Specificity: the rules lean on extra `.nautilus-window` / `listview.view` /
+  `.sidebar-pane` prefixes to outrank Graphite's generic and `%sidebar-row`
+  rules without `!important`
+- Inner node structure matters: the overlap padding targets
+  `row > revealer.sidebar-revealer > box` per `nautilus-sidebar-row.ui`
+
+Commits: `07a74ea`, `f70386e`, `6c2ed69`, `354e2e8`, `9fdc731`.
 
 ## Local install (reproduce this machine's look)
 
@@ -83,6 +119,7 @@ G=~/.themes/Graphite-Dark-nord
 ln -sfn "$G/gtk-4.0/gtk.css"      ~/.config/gtk-4.0/gtk.css
 ln -sfn "$G/gtk-4.0/gtk-dark.css" ~/.config/gtk-4.0/gtk-dark.css
 ln -sfn "$G/gtk-4.0/assets"       ~/.config/gtk-4.0/assets
+ln -sfn "$G/gtk-4.0/windows-assets" ~/.config/gtk-4.0/windows-assets  # WhiteSur buttons
 ```
 
 Activate the theme:
