@@ -1,6 +1,26 @@
 //
 // Nautilus
 //
+
+// === Fork: tunable Nautilus colours ==========================================
+// Three independent knobs for the file manager's look. These are starting
+// points - tweak freely. "Darker" = pull more of the dark $base (or black)
+// into each value.
+//
+//   1. $nautilus-sidebar-bg  left pane background + selected folders (the
+//                            light/"white" highlight). Raising the 2nd mix
+//                            number mixes more dark $base into $sidebg = darker.
+//   2. $nautilus-view-bg     right pane (main file view) background. Also used
+//                            for the selected sidebar row so it keeps merging
+//                            seamlessly into the view. Raise the darken() amount
+//                            for a darker pane.
+//   3. $nautilus-odd-row-bg  odd-row zebra stripe in the list view. A black
+//                            alpha overlay: raise the alpha to darken the stripe.
+//
+$nautilus-sidebar-bg: mix($base, $sidebg, 14%); // was mix(..., 12.5%)
+$nautilus-view-bg: darken($base, 3%); // was $base
+$nautilus-odd-row-bg: gtkalpha(currentColor, 0.03); // was gtkalpha(currentColor, 0.03)
+
 .nautilus-window {
   @if $sidebar =='styled' {
     &.background {
@@ -11,7 +31,7 @@
       }
     }
 
-    flap.unfolded > placessidebar {
+    flap.unfolded>placessidebar {
       @if $topbar =='dark' and $variant =='light' {
         margin: 0;
         background-color: transparent;
@@ -25,8 +45,8 @@
         border-radius: 0 $modal-radius + $space-size $modal-radius + $space-size 0;
       }
 
-      > scrolledwindow > viewport {
-        > list.navigation-sidebar {
+      >scrolledwindow>viewport {
+        >list.navigation-sidebar {
           background: none;
           padding: $space-size;
 
@@ -38,14 +58,17 @@
             padding-right: $space-size + 2px;
           }
 
-          > separator {
+          >separator {
             background: none;
           }
 
-          > row.activatable {
+          >row.activatable {
             border-radius: $modal-radius;
 
-            &, image.sidebar-icon, label.sidebar-label, button.sidebar-button {
+            &,
+            image.sidebar-icon,
+            label.sidebar-label,
+            button.sidebar-button {
               @if $topbar =='dark' and $variant =='light' {
                 color: $titlebar-text-secondary;
               }
@@ -64,13 +87,19 @@
               background-color: $base;
               font-weight: 700;
 
-              &, image.sidebar-icon, label.sidebar-label, button.sidebar-button {
+              &,
+              image.sidebar-icon,
+              label.sidebar-label,
+              button.sidebar-button {
                 color: $primary;
               }
             }
 
             &:disabled {
-              &, image.sidebar-icon, label.sidebar-label {
+
+              &,
+              image.sidebar-icon,
+              label.sidebar-label {
                 color: $titlebar-text-secondary-disabled;
               }
             }
@@ -78,14 +107,14 @@
         }
       }
 
-      > scrolledwindow > scrollbar {
+      >scrolledwindow>scrollbar {
         background-color: $primary;
         border: none;
 
-        > range > though {
+        >range>though {
           background: none;
 
-          > slider {
+          >slider {
             border: none;
           }
         }
@@ -109,8 +138,10 @@
           }
         }
 
-        scrolledwindow:not(.pinned) > tabbox {
-          tab, tab > button.flat {
+        scrolledwindow:not(.pinned)>tabbox {
+
+          tab,
+          tab>button.flat {
             color: $titlebar-text-secondary;
 
             &:hover {
@@ -118,7 +149,9 @@
               background-color: $titlebar-fill;
             }
 
-            &:active, &:checked, &:selected {
+            &:active,
+            &:checked,
+            &:selected {
               color: $titlebar-text;
               background-color: $titlebar-divider;
             }
@@ -138,8 +171,10 @@
     }
 
     .nautilus-grid-view {
-      &, .view {
-        background-color: $base;
+
+      &,
+      .view {
+        background-color: $nautilus-view-bg;
         border-radius: $window-radius - $space-size;
       }
 
@@ -150,9 +185,18 @@
 
     .nautilus-list-view,
     .nautilus-network-view {
-      &, columnview.view {
-        background-color: $base;
+
+      &,
+      columnview.view {
+        background-color: $nautilus-view-bg;
         border-radius: $window-radius - $space-size;
+      }
+
+      // Sort/column headers share the main-view background instead of the
+      // slightly lighter default ($overlay/solid header fill).
+      columnview.view>header>button,
+      columnview.view>header>button:disabled {
+        background-color: $nautilus-view-bg;
       }
 
       @if $variant =='light' and $topbar =='dark' {
@@ -165,12 +209,14 @@
       margin: 0 $space-size $space-size 0;
       background-color: $base;
 
-      list, actionbar, actionbar > revealer > box {
+      list,
+      actionbar,
+      actionbar>revealer>box {
         background-color: transparent;
       }
     }
 
-    flap > separator {
+    flap>separator {
       background: none;
     }
 
@@ -182,7 +228,7 @@
       }
     }
 
-    banner > revealer > widget {
+    banner>revealer>widget {
       border-radius: $window-radius - $space-size;
 
       @if $variant =='light' and $topbar =='dark' {
@@ -221,7 +267,7 @@
   infobar {
     margin: $space-size / 2;
 
-    > revealer > box {
+    >revealer>box {
       border-radius: $corner-radius + $space-size;
     }
   }
@@ -260,7 +306,7 @@
   border-radius: $circular-radius;
   padding: 0;
 
-  > button {
+  >button {
     border-radius: $circular-radius;
     padding: $space-size / 2 2px;
   }
@@ -289,7 +335,8 @@
     padding: 0;
     border-radius: $corner-radius * 2;
 
-    #NautilusViewCell, .nautilus-view-cell {
+    #NautilusViewCell,
+    .nautilus-view-cell {
       padding: $space-size;
 
       .icon-ui-labels-box {
@@ -315,7 +362,7 @@
     margin: 0;
     border-spacing: $space-size / 2;
 
-    > row.activatable {
+    >row.activatable {
       padding: 0;
       margin: 0;
       border-radius: $corner-radius;
@@ -324,7 +371,8 @@
         background-color: $primary;
         color: on($primary);
 
-        expander, .dim-label {
+        expander,
+        .dim-label {
           color: on($primary);
         }
 
@@ -333,16 +381,17 @@
         }
       }
 
-      > cell {
+      >cell {
         padding: 0;
 
-        > widget#NautilusViewCell, .nautilus-view-cell {
+        >widget#NautilusViewCell,
+        .nautilus-view-cell {
           padding: $space-size / 2 $space-size * 1.5;
         }
       }
 
       &:nth-child(odd):not(:disabled) {
-        background-image: image(gtkalpha(currentColor, 0.03));
+        background-image: image($nautilus-odd-row-bg);
       }
     }
   }
@@ -363,11 +412,11 @@ $nautilus-inv-radius: 10px;
 
 // Overlap every row by $r, compensating with padding so row spacing is
 // unchanged. (Inner node per nautilus-sidebar-row.ui: row > revealer > box.)
-.nautilus-window .navigation-sidebar > row.activatable {
+.nautilus-window .navigation-sidebar>row.activatable {
   margin-top: -$nautilus-inv-radius;
   margin-bottom: -$nautilus-inv-radius;
 
-  > revealer.sidebar-revealer > box {
+  >revealer.sidebar-revealer>box {
     padding-top: $nautilus-inv-radius;
     padding-bottom: $nautilus-inv-radius;
   }
@@ -376,9 +425,10 @@ $nautilus-inv-radius: 10px;
 // The fill is pinned on hover/focus too so the row stays stable (only unselected
 // rows react to hover). The extra .nautilus-window / listview.view /
 // .sidebar-pane classes outrank the generic and %sidebar-row rules.
-.nautilus-window listview.view.navigation-sidebar > row:selected,
-.nautilus-window .sidebar-pane .navigation-sidebar > row:selected,
-.nautilus-window .navigation-sidebar > row:selected {
+.nautilus-window listview.view.navigation-sidebar>row:selected,
+.nautilus-window .sidebar-pane .navigation-sidebar>row:selected,
+.nautilus-window .navigation-sidebar>row:selected {
+
   &,
   &:hover,
   &:focus-visible:focus-within,
@@ -395,46 +445,54 @@ $nautilus-inv-radius: 10px;
     // left corners are free for the discs. (GTK4: no 4-value bg-position, so
     // corners are placed with left top / left bottom.)
     background-image:
-      radial-gradient(circle $nautilus-inv-radius at top left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),       // top-right concave
-      radial-gradient(circle $nautilus-inv-radius at bottom left, transparent ($nautilus-inv-radius - 1px), $base $nautilus-inv-radius),    // bottom-right concave
-      radial-gradient(circle $nautilus-inv-radius at bottom right, $base ($nautilus-inv-radius - 1px), transparent $nautilus-inv-radius),   // top-left convex
-      radial-gradient(circle $nautilus-inv-radius at top right, $base ($nautilus-inv-radius - 1px), transparent $nautilus-inv-radius),      // bottom-left convex
-      linear-gradient($base, $base),   // body: right-covering bar (inset from left by r)
-      linear-gradient($base, $base);   // body: full-width middle bar
-    background-position: top right, bottom right, left top, left bottom, right center, center;
-    background-size:
-      $nautilus-inv-radius $nautilus-inv-radius,
-      $nautilus-inv-radius $nautilus-inv-radius,
-      $nautilus-inv-radius ($nautilus-inv-radius * 2),
-      $nautilus-inv-radius ($nautilus-inv-radius * 2),
-      calc(100% - #{$nautilus-inv-radius}) calc(100% - #{$nautilus-inv-radius * 2}),
-      100% calc(100% - #{$nautilus-inv-radius * 4});
-    background-repeat: no-repeat;
-  }
+      radial-gradient(circle $nautilus-inv-radius at top left, transparent ($nautilus-inv-radius - 1px), $nautilus-view-bg $nautilus-inv-radius), // top-right concave
+      radial-gradient(circle $nautilus-inv-radius at bottom left, transparent ($nautilus-inv-radius - 1px), $nautilus-view-bg $nautilus-inv-radius), // bottom-right concave
+      radial-gradient(circle $nautilus-inv-radius at bottom right, $nautilus-view-bg (
+        $nautilus-inv-radius - 1px),
+      transparent $nautilus-inv-radius),
+      // top-left convex
+      radial-gradient(circle $nautilus-inv-radius at top right, $nautilus-view-bg (
+        $nautilus-inv-radius - 1px),
+      transparent $nautilus-inv-radius),
+      // bottom-left convex
+      linear-gradient($nautilus-view-bg, $nautilus-view-bg),
+      // body: right-covering bar (inset from left by r)
+      linear-gradient($nautilus-view-bg, $nautilus-view-bg
+    ); // body: full-width middle bar
+  background-position: top right, bottom right, left top, left bottom, right center, center;
+  background-size: $nautilus-inv-radius $nautilus-inv-radius,
+  $nautilus-inv-radius $nautilus-inv-radius,
+  $nautilus-inv-radius ($nautilus-inv-radius * 2),
+  $nautilus-inv-radius ($nautilus-inv-radius * 2),
+  calc(100% - #{$nautilus-inv-radius}) calc(100% - #{$nautilus-inv-radius * 2}),
+  100% calc(100% - #{$nautilus-inv-radius * 4});
+  background-repeat: no-repeat;
+}
 }
 
 // Tone down the (bright) Nautilus sidebar / left-pane background. Left pane
 // only for now; the main view is untouched. Tunable via the mix ratio - higher
 // second number = darker (more of the dark $base mixed into the sidebar colour).
 // The .nautilus-window prefix outranks the base .sidebar-pane rule.
-$nautilus-sidebar-bg: mix($base, $sidebg, 12.5%);
-
-.nautilus-window .sidebar-pane toolbarview > scrolledwindow,
-.nautilus-window .sidebar-pane toolbarview > placessidebar > scrolledwindow,
-.nautilus-window .sidebar-pane toolbarview > stacksidebar.sidebar > scrolledwindow {
+// ($nautilus-sidebar-bg is defined in the tunable-colours block at the top.)
+.nautilus-window .sidebar-pane toolbarview>scrolledwindow,
+.nautilus-window .sidebar-pane toolbarview>placessidebar>scrolledwindow,
+.nautilus-window .sidebar-pane toolbarview>stacksidebar.sidebar>scrolledwindow {
   background-color: $nautilus-sidebar-bg;
 }
 
 // Reuse the same toned-down colour for the right-pane selection highlight
 // (list + grid) and the floating "N selected" bar, so the whole window shares
 // one accent-free selection colour. .nautilus-window outranks the base rules.
-.nautilus-window .nautilus-list-view listview.view > row.activatable:selected,
+.nautilus-window .nautilus-list-view listview.view>row.activatable:selected,
 .nautilus-window .nautilus-grid-view child.activatable:selected,
 .nautilus-window .floating-bar {
   background-color: $nautilus-sidebar-bg;
   color: on($nautilus-sidebar-bg);
 
-  expander, .dim-label, button {
+  expander,
+  .dim-label,
+  button {
     color: on($nautilus-sidebar-bg);
   }
 }
@@ -442,39 +500,44 @@ $nautilus-sidebar-bg: mix($base, $sidebg, 12.5%);
 // Match the main-view selected items' corner radius to the sidebar selection
 // radius ($nautilus-inv-radius). Applied to the item (not just :selected) so
 // hover uses the same shape.
-.nautilus-window .nautilus-list-view listview.view > row.activatable,
+.nautilus-window .nautilus-list-view listview.view>row.activatable,
 .nautilus-window .nautilus-grid-view child.activatable {
   border-radius: $nautilus-inv-radius;
 }
 
-#NautilusQueryEditor, .nautilus-query-editor {
+#NautilusQueryEditor,
+.nautilus-query-editor {
 
   // search entry
-  > menubutton {
+  >menubutton {
     margin: 0;
 
-    > button {
+    >button {
       min-width: 16px;
       min-height: 16px;
       margin: 4px 0;
     }
   }
 
-  > text {
+  >text {
     margin: 0;
   }
 }
 
-#NautilusPathBar, .nautilus-pathbar {
+#NautilusPathBar,
+.nautilus-pathbar {
   border-radius: $circular-radius;
   margin: 0;
 
-  #NautilusPathButton, .nautilus-path-button {
+  #NautilusPathButton,
+  .nautilus-path-button {
     margin: 0 $space-size / 2;
     border-radius: $circular-radius;
 
     &.current-dir {
-      &:hover, &:active {
+
+      &:hover,
+      &:active {
         background: none;
         box-shadow: none;
       }
@@ -485,19 +548,20 @@ $nautilus-sidebar-bg: mix($base, $sidebg, 12.5%);
     }
   }
 
-  > menubutton {
+  >menubutton {
     margin: 0;
 
-    > button {
+    >button {
       border-radius: $circular-radius;
     }
   }
 }
 
-#NautilusQueryEditorTag, .nautilus-query-editor-tag {
+#NautilusQueryEditorTag,
+.nautilus-query-editor-tag {
   border-radius: $circular-radius;
 
-  > button {
+  >button {
     margin: $space-size / 2;
     padding: 0;
     min-height: $small-size - 2px;
@@ -509,15 +573,16 @@ $nautilus-sidebar-bg: mix($base, $sidebg, 12.5%);
 // Gnome Control Center
 //
 window.dialog {
-  > box > stack > box > box {
-    > notebook.frame {
+  >box>stack>box>box {
+    >notebook.frame {
       border-width: 0 0 0 1px;
       border-radius: 0;
     }
   }
 }
 
-preferencesgroup button.accent, // GDM Setting
+preferencesgroup button.accent,
+// GDM Setting
 
 preferencesgroup button.accent-button {
   min-height: 24px;
@@ -536,7 +601,8 @@ preferencesgroup button.accent-button {
     background-clip: content-box;
   }
 
-  &:checked, &:checked:hover {
+  &:checked,
+  &:checked:hover {
     box-shadow: 0 0 0 3px var(--accent-bg-color);
     background: var(--accent-bg-color);
     background-clip: content-box;
@@ -640,13 +706,17 @@ leaflet {
 
 // labels
 label {
-  &.primary-label, &.month-name, &.secondary-label {
+
+  &.primary-label,
+  &.month-name,
+  &.secondary-label {
     font-size: 16pt;
     font-weight: bold;
     padding: $space-size * 2;
   }
 
-  &.primary-label, &.month-name {
+  &.primary-label,
+  &.month-name {
     color: $primary;
   }
 
@@ -749,7 +819,7 @@ event {
 
 // Event Popover
 popover.event-popover,
-popover.event-popover > contents {
+popover.event-popover>contents {
   padding: 0;
 }
 
@@ -761,7 +831,7 @@ popover.event-popover > contents {
 .calendar-list {
   background-color: transparent;
 
-  > list {
+  >list {
     border-radius: 4px;
   }
 }
@@ -810,7 +880,8 @@ datechooser {
       font-weight: bold;
     }
 
-    button.flat, button.image-button {
+    button.flat,
+    button.image-button {
       min-height: $medium-size;
       min-width: $medium-size;
       padding: 0;
@@ -824,7 +895,8 @@ datechooser {
   }
 
   // day names and week numbers
-  .weeknum, .weekday {
+  .weeknum,
+  .weekday {
     color: $text-disabled;
     font-size: smaller;
   }
@@ -894,7 +966,7 @@ datechooser {
 .week-header {
   padding: 0;
 
-  & > box:first-child {
+  &>box:first-child {
     border-bottom: 1px solid $border;
   }
 
@@ -916,7 +988,7 @@ datechooser {
   }
 }
 
-weekhourbar > label {
+weekhourbar>label {
   font-size: 10pt;
   padding: 4px $space-size;
 }
@@ -925,7 +997,7 @@ weekhourbar > label {
   color: $border;
 }
 
-weekgrid > widget.now-strip {
+weekgrid>widget.now-strip {
   background-color: gtkalpha($primary, 0.8);
   margin: 0 0 0 1px;
   min-height: 3px;
@@ -933,7 +1005,9 @@ weekgrid > widget.now-strip {
 
 weekgrid,
 .week-header {
-  &:selected, &.dnd {
+
+  &:selected,
+  &.dnd {
     background-color: gtkalpha($primary, 0.25);
   }
 }
@@ -1019,17 +1093,17 @@ monthcell {
 }
 
 // Month popover
-monthpopover > box {
+monthpopover>box {
   margin: 0;
   padding: 0;
   background-color: transparent;
 }
 
-.notes-section box > textview {
+.notes-section box>textview {
   border-radius: $corner-radius;
   padding: $space-size;
 
-  > text {
+  >text {
     background: none;
   }
 }
@@ -1040,11 +1114,11 @@ agenda-view list {
     background-color: transparent;
   }
 
-  > row {
+  >row {
     padding: 2px $space-size * 2;
   }
 
-  > label {
+  >label {
     padding: $space-size $space-size * 2;
   }
 }
@@ -1054,7 +1128,7 @@ label.no-events {
 }
 
 // Search
-searchbutton > popover > arrow {
+searchbutton>popover>arrow {
   background: none;
   border: none;
 }
@@ -1062,31 +1136,37 @@ searchbutton > popover > arrow {
 menubutton.sources-button {
   margin: 0;
 
-  > button {
+  >button {
     border-radius: 0 0 $window-radius $window-radius;
     margin: 0;
   }
 }
 
-menubutton stack > box {
+menubutton stack>box {
   border-spacing: $space-size;
 }
 
 @if $sidebar =='styled' {
 
-  window:not(.nautilus-window) > dialog-host toastoverlay overlay-split-view.drop-target .sidebar-pane,
-  window:not(.nautilus-window) > dialog-host toastoverlay navigation-split-view.drop-target .sidebar-pane {
+  window:not(.nautilus-window)>dialog-host toastoverlay overlay-split-view.drop-target .sidebar-pane,
+  window:not(.nautilus-window)>dialog-host toastoverlay navigation-split-view.drop-target .sidebar-pane {
     background-color: $base-alt;
     color: $text;
 
-    &:dir(ltr), &.end:dir(rtl) {
-      &, banner > revealer > widget {
+    &:dir(ltr),
+    &.end:dir(rtl) {
+
+      &,
+      banner>revealer>widget {
         box-shadow: inset -1px 0 $border;
       }
     }
 
-    &:dir(rtl), &.end:dir(ltr) {
-      &, banner > revealer > widget {
+    &:dir(rtl),
+    &.end:dir(ltr) {
+
+      &,
+      banner>revealer>widget {
         box-shadow: inset 1px 0 $border;
       }
     }
@@ -1144,7 +1224,7 @@ flowboxchild {
 }
 
 app-context-bar {
-  > box:not(:first-child) > button.flat {
+  >box:not(:first-child)>button.flat {
     border-radius: 0;
 
     &:last-child {
@@ -1152,7 +1232,7 @@ app-context-bar {
     }
   }
 
-  > box:first-child > button.flat {
+  >box:first-child>button.flat {
     border-radius: 0;
 
     &:first-child {
@@ -1160,7 +1240,7 @@ app-context-bar {
     }
   }
 
-  > box > button.flat {
+  >box>button.flat {
     border-left-color: $border;
   }
 }
@@ -1179,7 +1259,8 @@ carousel.card {
     background-color: $divider;
   }
 
-  &.green, &.details-rating-0 {
+  &.green,
+  &.details-rating-0 {
     color: darken($success, 15%);
     background-color: rgba($success, 0.15);
   }
@@ -1190,7 +1271,8 @@ carousel.card {
     background-color: rgba($blue-500, 0.15);
   }
 
-  &.yellow, &.details-rating-12 {
+  &.yellow,
+  &.details-rating-12 {
     color: darken($warning, 15%);
     background-color: rgba($warning, 0.15);
   }
@@ -1200,7 +1282,8 @@ carousel.card {
     background-color: rgba($orange-500, .15);
   }
 
-  &.red, &.details-rating-18 {
+  &.red,
+  &.details-rating-18 {
     color: darken($error, 15%);
     background-color: rgba($error, 0.15);
   }
@@ -1308,7 +1391,7 @@ screenshot-carousel box.frame.view {
   .sidebar {
     background: none;
 
-    > row.activatable:selected {
+    >row.activatable:selected {
       background-color: $primary;
       color: on($primary);
     }
@@ -1316,8 +1399,8 @@ screenshot-carousel box.frame.view {
 
   popover.background {
 
-    > arrow,
-    > contents {
+    >arrow,
+    >contents {
       padding: 0;
     }
   }
@@ -1344,7 +1427,7 @@ window.org-gnome-Builder {
       }
     }
 
-    menubutton > button {
+    menubutton>button {
       border-radius: $corner-radius;
       padding: $space-size $space-size * 1.5;
     }
@@ -1358,7 +1441,9 @@ window.org-gnome-Builder {
 }
 
 popover.background.global-search {
-  > arrow, > contents {
+
+  >arrow,
+  >contents {
     padding: 0;
   }
 }
@@ -1372,14 +1457,14 @@ panelframeswitcher {
   background-color: $base-alt;
   border-bottom: 1px solid $border;
 
-  > button {
+  >button {
     border: none;
     margin: 0;
     padding: $space-size / 2;
   }
 
   tabbar.inline {
-    > revealer > box {
+    >revealer>box {
       min-height: $small-size;
 
       .start-action {
@@ -1391,7 +1476,7 @@ panelframeswitcher {
         padding: 0;
         border-left: 1px solid $border;
 
-        menubutton > button {
+        menubutton>button {
           margin: $space-size;
           min-height: $small-size;
           min-width: $small-size;
@@ -1411,8 +1496,8 @@ panelframeswitcher {
 panelstatusbar {
   background-color: $background;
 
-  > menubutton > button,
-  > paneltogglebutton button.image-button {
+  >menubutton>button,
+  >paneltogglebutton button.image-button {
     border-radius: 0;
     @extend %button-flat-simple;
   }
@@ -1425,14 +1510,18 @@ panelstatusbar {
   button.toggle {
     padding: 0;
 
-    &, &:hover, &:focus, &:active, &:checked {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &:checked {
       background: none;
       outline: none;
       border: none;
       box-shadow: none;
     }
 
-    > stylevariantpreview > .wallpaper {
+    >stylevariantpreview>.wallpaper {
       border-radius: $corner-radius;
       outline-color: transparent;
       outline-width: 3px;
@@ -1441,15 +1530,15 @@ panelstatusbar {
       box-shadow: none;
     }
 
-    &:hover > stylevariantpreview > .wallpaper {
+    &:hover>stylevariantpreview>.wallpaper {
       outline-color: $fill;
     }
 
-    &:active > stylevariantpreview > .wallpaper {
+    &:active>stylevariantpreview>.wallpaper {
       outline-color: $track;
     }
 
-    &:checked > stylevariantpreview > .wallpaper {
+    &:checked>stylevariantpreview>.wallpaper {
       outline-color: $primary;
     }
   }
@@ -1460,13 +1549,15 @@ panelstatusbar {
 //
 
 window.dialog {
-  > .dialog-vbox > box > scrolledwindow > viewport > widget {
-    > list.boxed-list {
+  >.dialog-vbox>box>scrolledwindow>viewport>widget {
+    >list.boxed-list {
       border: none;
       border-radius: 0;
 
-      > row {
-        &:first-child, &:last-child {
+      >row {
+
+        &:first-child,
+        &:last-child {
           border-radius: 0;
         }
       }

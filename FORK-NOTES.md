@@ -64,11 +64,22 @@ Reworks Nautilus selection styling so the whole window shares one calm,
 accent-free highlight and the selected sidebar row visually merges into the
 main file view. All in `src/sass/gtk/apps/_gnome-4.0.scss`.
 
-What it does:
+Three tunable colours, grouped at the top of the Nautilus section so they are
+easy to play with (raise each to go darker):
 
-- Accent-free selection colour `$nautilus-sidebar-bg: mix($base, $sidebg, 12.5%)`
-  reused for the sidebar/left-pane background, the selected sidebar row, the
-  main-view list and grid selection, and the floating "N selected" bar
+- `$nautilus-sidebar-bg: mix($base, $sidebg, 25%)` - left-pane background +
+  selected folders (the light highlight). Higher 2nd mix number = darker.
+  Reused for the sidebar/left-pane background, the main-view list and grid
+  selection, and the floating "N selected" bar
+- `$nautilus-view-bg: darken($base, 3%)` - right pane (main file view)
+  background, the column/sort headers, and the selected sidebar row's bleed
+  fill (so the row still merges seamlessly into the darker view)
+- `$nautilus-odd-row-bg: gtkalpha(black, 0.12)` - list-view odd-row zebra
+  stripe. A black alpha overlay (was a faint `currentColor` lightening);
+  raise the alpha to darken the stripe
+
+What else it does:
+
 - Unified corner radius `$nautilus-inv-radius: 10px` across the sidebar
   selection and the main-view list/grid items
 - Selected sidebar row runs to the right edge (`margin-right: -$space-size`)
@@ -81,6 +92,8 @@ What it does:
   concave corners can curve into the neighbour row without changing spacing
 - The selection fill is pinned on hover/focus so the selected row stays
   stable; only unselected rows react to hover
+- Column/sort headers get `$nautilus-view-bg` to override Graphite's slightly
+  lighter default header fill
 
 Gotchas discovered while building this:
 
@@ -90,7 +103,8 @@ Gotchas discovered while building this:
 - Inner node structure matters: the overlap padding targets
   `row > revealer.sidebar-revealer > box` per `nautilus-sidebar-row.ui`
 
-Commits: `07a74ea`, `f70386e`, `6c2ed69`, `354e2e8`, `9fdc731`.
+Commits: `07a74ea`, `f70386e`, `6c2ed69`, `354e2e8`, `9fdc731` (plus later
+darker-tones + tunable-colours and column-header tweaks).
 
 ## Local install (reproduce this machine's look)
 
