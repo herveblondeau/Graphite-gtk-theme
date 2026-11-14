@@ -64,19 +64,22 @@ Reworks Nautilus selection styling so the whole window shares one calm,
 accent-free highlight and the selected sidebar row visually merges into the
 main file view. All in `src/sass/gtk/apps/_gnome-4.0.scss`.
 
-Three tunable colours, grouped at the top of the Nautilus section so they are
-easy to play with (raise each to go darker):
+Five tunable knobs, grouped at the top of the Nautilus section so they are
+easy to play with (current values are the in-use ones, tweak freely):
 
-- `$nautilus-sidebar-bg: mix($base, $sidebg, 25%)` - left-pane background +
+- `$nautilus-sidebar-bg: mix($base, $sidebg, 14%)` - left-pane background +
   selected folders (the light highlight). Higher 2nd mix number = darker.
   Reused for the sidebar/left-pane background, the main-view list and grid
   selection, and the floating "N selected" bar
 - `$nautilus-view-bg: darken($base, 3%)` - right pane (main file view)
   background, the column/sort headers, and the selected sidebar row's bleed
   fill (so the row still merges seamlessly into the darker view)
-- `$nautilus-odd-row-bg: gtkalpha(black, 0.12)` - list-view odd-row zebra
-  stripe. A black alpha overlay (was a faint `currentColor` lightening);
-  raise the alpha to darken the stripe
+- `$nautilus-odd-row-bg: gtkalpha(currentColor, 0.03)` - list-view odd-row
+  zebra stripe. An alpha overlay; raise the alpha for a stronger stripe
+- `$nautilus-text: $text` - primary label colour (file/folder names)
+- `$nautilus-text-secondary: rgba($text, 0.8)` - secondary text (sizes, dates,
+  column headers, dim labels). Alpha boosted from ~0.7 for more contrast; raise
+  it toward 1 for crisper text
 
 What else it does:
 
@@ -92,8 +95,10 @@ What else it does:
   concave corners can curve into the neighbour row without changing spacing
 - The selection fill is pinned on hover/focus so the selected row stays
   stable; only unselected rows react to hover
-- Column/sort headers get `$nautilus-view-bg` to override Graphite's slightly
-  lighter default header fill
+- Column/sort headers get `$nautilus-view-bg` plus `$nautilus-text-secondary`,
+  overriding Graphite's slightly lighter default header fill and dim text
+- Selected right-pane items re-override the cell text to `on($nautilus-sidebar-bg)`
+  (dark on the light highlight) - see the gotcha below
 
 Gotchas discovered while building this:
 
@@ -102,6 +107,9 @@ Gotchas discovered while building this:
   rules without `!important`
 - Inner node structure matters: the overlap padding targets
   `row > revealer.sidebar-revealer > box` per `nautilus-sidebar-row.ui`
+- `$nautilus-text` is applied on `#NautilusViewCell` (an ID), so the selected
+  state must re-override the cell text at ID + `:selected` specificity, else
+  selected labels keep the light view text and disappear on the highlight
 
 Commits: `07a74ea`, `f70386e`, `6c2ed69`, `354e2e8`, `9fdc731` (plus later
 darker-tones + tunable-colours and column-header tweaks).

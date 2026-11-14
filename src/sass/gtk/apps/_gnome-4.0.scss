@@ -16,10 +16,16 @@
 //                            for a darker pane.
 //   3. $nautilus-odd-row-bg  odd-row zebra stripe in the list view. A black
 //                            alpha overlay: raise the alpha to darken the stripe.
+//   4. $nautilus-text            primary label colour (file/folder names).
+//   5. $nautilus-text-secondary  secondary text (sizes, dates, column headers,
+//                                dim labels). Alpha boosted for more contrast;
+//                                raise the alpha toward 1 for crisper text.
 //
 $nautilus-sidebar-bg: mix($base, $sidebg, 14%); // was mix(..., 12.5%)
 $nautilus-view-bg: darken($base, 3%); // was $base
 $nautilus-odd-row-bg: gtkalpha(currentColor, 0.03); // was gtkalpha(currentColor, 0.03)
+$nautilus-text: $text; // primary labels (default theme text)
+$nautilus-text-secondary: rgba($text, 0.8); // was ~0.7 on dark / 0.6 on light
 
 .nautilus-window {
   @if $sidebar =='styled' {
@@ -193,10 +199,12 @@ $nautilus-odd-row-bg: gtkalpha(currentColor, 0.03); // was gtkalpha(currentColor
       }
 
       // Sort/column headers share the main-view background instead of the
-      // slightly lighter default ($overlay/solid header fill).
+      // slightly lighter default ($overlay/solid header fill), with the
+      // boosted secondary text colour.
       columnview.view>header>button,
       columnview.view>header>button:disabled {
         background-color: $nautilus-view-bg;
+        color: $nautilus-text-secondary;
       }
 
       @if $variant =='light' and $topbar =='dark' {
@@ -338,6 +346,7 @@ $nautilus-odd-row-bg: gtkalpha(currentColor, 0.03); // was gtkalpha(currentColor
     #NautilusViewCell,
     .nautilus-view-cell {
       padding: $space-size;
+      color: $nautilus-text;
 
       .icon-ui-labels-box {
         margin: 0 0 $space-size;
@@ -345,7 +354,7 @@ $nautilus-odd-row-bg: gtkalpha(currentColor, 0.03); // was gtkalpha(currentColor
       }
 
       .dim-label {
-        color: $text-secondary;
+        color: $nautilus-text-secondary;
         margin: 0;
       }
     }
@@ -387,6 +396,7 @@ $nautilus-odd-row-bg: gtkalpha(currentColor, 0.03); // was gtkalpha(currentColor
         >widget#NautilusViewCell,
         .nautilus-view-cell {
           padding: $space-size / 2 $space-size * 1.5;
+          color: $nautilus-text;
         }
       }
 
@@ -493,6 +503,16 @@ $nautilus-inv-radius: 10px;
   expander,
   .dim-label,
   button {
+    color: on($nautilus-sidebar-bg);
+  }
+
+  // The per-cell $nautilus-text colour above is set on an ID (#NautilusViewCell)
+  // so it must be re-overridden here (ID + extra :selected class) or selected
+  // labels keep the light view text and vanish against the light highlight.
+  #NautilusViewCell,
+  .nautilus-view-cell,
+  #NautilusViewCell .dim-label,
+  .nautilus-view-cell .dim-label {
     color: on($nautilus-sidebar-bg);
   }
 }
